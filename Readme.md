@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Алексей Гунчин](https://up.htmlacademy.ru/javascript/20/user/68098).
-* Наставник: `Неизвестно`.
+* Наставник: [Руфат Хасларов](https://up.htmlacademy.ru/javascript/20/user/372587).
 
 ---
 
