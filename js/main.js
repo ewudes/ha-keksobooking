@@ -5,16 +5,16 @@ var PIN_HEIGHT = 70;
 
 var PIN_MIN_TOP = 200;
 var MAP_FILTER_HEIGHT = 50;
-var QUANTITY_PINS = 8;
+var PINS_QUANTITY = 8;
 
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var TIMES = ['12:00', '13:00', '14:00'];
-var FUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var maxX = document.body.querySelector('.map').clientWidth;
 var maxY = document.body.querySelector('.map').clientHeight;
 
-var pinTempl = document.body.querySelector('#pin').content.querySelector('button');
+var pinTemplate = document.body.querySelector('#pin').content.querySelector('button');
 var fragment = document.createDocumentFragment();
 
 document.body.querySelector('.map').classList.remove('map--faded');
@@ -24,37 +24,48 @@ var randomInt = function (min, max) {
   return Math.floor(rand);
 };
 
-var getMocData = function () {
+var getPhotos = function () {
+  var photos = [];
+  var photosCount = randomInt(1, 10);
+  for (var j = 0; j < photosCount; j++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + j + 'jpg');
+  }
+  return photos;
+};
+
+var getListFeatures = function () {
+  var minF = randomInt(0, FEATURES.length - 1);
+  var maxF = randomInt(minF, FEATURES.length);
+  return FEATURES.slice(minF, maxF);
+};
+
+var getMockData = function () {
   var pins = [];
 
-  for (var i = 1; i <= QUANTITY_PINS; i++) {
-    var minF = randomInt(0, FUTURES.length - 1);
-    var maxF = randomInt(minF, FUTURES.length);
-    var photos = [];
-    var photosCount = randomInt(1, 10);
-    for (var j = 0; j < photosCount; j++) {
-      photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + 'jpg');
-    }
+  for (var i = 1; i <= PINS_QUANTITY; i++) {
+    var positionX = randomInt(1, maxX);
+    var positionY = randomInt(PIN_MIN_TOP, maxY - MAP_FILTER_HEIGHT);
+
     pins.push({
       'author': {
         'avatar': 'img/avatars/user0' + i + '.png'
       },
       'offer': {
         'title': 'Заголовок предложения' + i,
-        'address': randomInt(1, maxX) + ',' + randomInt(1, maxY),
+        'address': positionX + ',' + positionY,
         'price': randomInt(1, 10000),
         'type': TYPES[randomInt(0, TYPES.length - 1)],
         'rooms': randomInt(1, 10),
         'guests': randomInt(1, 5),
         'checkin': TIMES[randomInt(0, TIMES.length - 1)],
         'checkout': TIMES[randomInt(0, TIMES.length - 1)],
-        'features': FUTURES.slice(minF, maxF),
+        'features': getListFeatures(),
         'description': 'Описание предложения',
-        'photos': photos
+        'photos': getPhotos(),
       },
       'location': {
-        'x': randomInt(1, maxX),
-        'y': randomInt(PIN_MIN_TOP, maxY - MAP_FILTER_HEIGHT)
+        'x': positionX,
+        'y': positionY
       }
     });
   }
@@ -62,7 +73,7 @@ var getMocData = function () {
 };
 
 var renderPin = function (pins, count) {
-  var pinElement = pinTempl.cloneNode(true);
+  var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = pins[count].location.x - PIN_WIDTH / 2 + 'px';
   pinElement.style.top = pins[count].location.y - PIN_HEIGHT + 'px';
   pinElement.querySelector('img').src = pins[count].author.avatar;
@@ -71,7 +82,7 @@ var renderPin = function (pins, count) {
 };
 
 var renderPins = function () {
-  var pins = getMocData();
+  var pins = getMockData();
 
   for (var k = 0; k < pins.length; k++) {
     fragment.appendChild(renderPin(pins, k));
