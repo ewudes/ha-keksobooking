@@ -102,43 +102,65 @@ var renderPins = function () {
 document.body.querySelector('.map__pins').appendChild(renderPins());
 
 var setCardFeatures = function (cardElement, data) {
-  var cardFeatures = cardElement.querySelectorAll('.popup__feature');
-
-  for (var i = 0; i < cardFeatures.length; i++) {
-    cardFeatures[i].classList.add('hidden');
-    for (var j = 0; j < data.length; j++) {
-      cardFeatures[j].classList.remove('hidden');
+  var featuresContainer = cardElement.querySelector('.popup__features');
+  if (data.length >= 1) {
+    var cardFeatures = cardElement.querySelectorAll('.popup__feature');
+    for (var i = 0; i < cardFeatures.length; i++) {
+      cardFeatures[i].classList.add('hidden');
+      for (var j = 0; j < data.length; j++) {
+        cardFeatures[j].classList.remove('hidden');
+      }
     }
+  } else {
+    featuresContainer.classList.add('hidden');
   }
 };
 
 var setCardPhotos = function (cardElement, images) {
   var photosContainer = cardElement.querySelector('.popup__photos');
-  var photos = photosContainer.querySelector('.popup__photo');
-  var lastPhotos = cardElement.querySelectorAll('.popup__photo');
-
-  for (var j = 0; j < lastPhotos.length; j++) {
-    lastPhotos[j].remove();
+  if (images.length >= 1) {
+    var photos = photosContainer.querySelector('.popup__photo');
+    var lastPhotos = cardElement.querySelectorAll('.popup__photo');
+    for (var j = 0; j < lastPhotos.length; j++) {
+      lastPhotos[j].remove();
+    }
+    for (var k = 0; k < images.length; k++) {
+      photos.src = images[k];
+      var cloneImage = photos.cloneNode(true);
+      photosContainer.appendChild(cloneImage);
+    }
+  } else {
+    photosContainer.classList.add('hidden');
   }
+};
 
-  for (var k = 0; k < images.length; k++) {
-    photos.src = images[k];
-    var cloneImage = photos.cloneNode(true);
-    photosContainer.appendChild(cloneImage);
+var setCardTextContent = function (cardElement, className, data) {
+  if (data !== '') {
+    cardElement.querySelector(className).textContent = data;
+  } else {
+    cardElement.querySelector(className).classList.add('hidden');
+  }
+};
+
+var setCardAvatar = function (cardElement, userPic) {
+  if (userPic !== '') {
+    cardElement.querySelector('.popup__avatar').src = userPic;
+  } else {
+    cardElement.querySelector('.popup__avatar').src = 'img/avatars/default.png';
   }
 };
 
 var renderCard = function (data) {
   var pinsData = data[0];
   var cardElement = cardTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__title').textContent = pinsData.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = pinsData.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = pinsData.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = typeHousing[pinsData.offer.type];
-  cardElement.querySelector('.popup__text--capacity').textContent = pinsData.offer.rooms + ' комнаты для ' + pinsData.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinsData.offer.checkin + ', выезд до ' + pinsData.offer.checkout;
-  cardElement.querySelector('.popup__description').textContent = pinsData.offer.description;
-  cardElement.querySelector('.popup__avatar').src = pinsData.author.avatar;
+  setCardTextContent(cardElement, '.popup__title', pinsData.offer.title);
+  setCardTextContent(cardElement, '.popup__text--address', pinsData.offer.adderss);
+  setCardTextContent(cardElement, '.popup__text--price', pinsData.offer.price + ' ₽/ночь');
+  setCardTextContent(cardElement, '.popup__type', typeHousing[pinsData.offer.type]);
+  setCardTextContent(cardElement, '.popup__text--capacity', pinsData.offer.rooms + ' комнаты для ' + pinsData.offer.guests + ' гостей');
+  setCardTextContent(cardElement, '.popup__text--time', 'Заезд после ' + pinsData.offer.checkin + ', выезд до ' + pinsData.offer.checkout);
+  setCardTextContent(cardElement, '.popup__description', pinsData.offer.description);
+  setCardAvatar(cardElement, pinsData.author.avatar);
   setCardFeatures(cardElement, pinsData.offer.features);
   setCardPhotos(cardElement, pinsData.offer.photos);
   return cardElement;
