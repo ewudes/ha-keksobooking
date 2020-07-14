@@ -9,6 +9,7 @@
   var timeOut = form.querySelector('#timeout');
   var rooms = form.querySelector('#room_number');
   var capacity = form.querySelector('#capacity');
+  var formElements = document.querySelectorAll('fieldset, select');
 
   var minPricesForNight = {
     bungalo: 0,
@@ -17,7 +18,7 @@
     palace: 10000
   };
 
-  var guestsLimit = {
+  var GuestsLimit = {
     MAX: 100,
     MIN: 0
   };
@@ -36,11 +37,14 @@
   };
 
   var setRoomCapacity = function () {
-    if (Number(rooms.value) < Number(capacity.value)) {
+    var roomsValue = Number(rooms.value);
+    var capacityValue = Number(capacity.value);
+
+    if (roomsValue < capacityValue) {
       capacity.setCustomValidity('Количество гостей не может превышать количество комнат');
-    } else if (Number(capacity.value) === guestsLimit.MIN && Number(rooms.value) !== guestsLimit.MAX) {
+    } else if (capacityValue === GuestsLimit.MIN && roomsValue !== GuestsLimit.MAX) {
       capacity.setCustomValidity('«Не для гостей» можно выбрать только 100 комнат');
-    } else if (Number(rooms.value) === guestsLimit.MAX && Number(capacity.value) !== guestsLimit.MIN) {
+    } else if (roomsValue === GuestsLimit.MAX && capacityValue !== GuestsLimit.MIN) {
       capacity.setCustomValidity('100 комнат — «не для гостей»');
     } else {
       capacity.setCustomValidity('');
@@ -55,6 +59,7 @@
   formSubmit.addEventListener('click', setRoomCapacity);
 
   window.form = {
-    form: form
+    form: form,
+    formElements: formElements
   };
 })();

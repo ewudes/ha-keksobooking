@@ -5,10 +5,9 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var mapPins = window.mapMode.map.querySelector('.map__pins');
-  var mapPinMain = window.mapMode.map.querySelector('.map__pin--main');
+  var mapPins = window.map.map.querySelector('.map__pins');
+  var mapPinMain = window.map.map.querySelector('.map__pin--main');
   var pinImage = mapPinMain.querySelector('img');
-  var activeMode = false;
   var pinTemplate = document.body.querySelector('#pin')
     .content
     .querySelector('button');
@@ -16,13 +15,13 @@
   var onLeftMouseDownProcess = function (evt) {
     if (evt.button === 0) {
       evt.preventDefault();
-      window.mapMode.deleteUnactiveMode();
+      window.map.deleteUnactiveMode();
     }
   };
 
   var onEnterProcess = function (evt) {
     if (evt.key === 'Enter') {
-      window.mapMode.deleteUnactiveMode();
+      window.map.deleteUnactiveMode();
     }
   };
 
@@ -34,12 +33,12 @@
   var getMainPinAddress = function () {
     var leftCoord = mapPinMain.offsetLeft;
     var topCoord = mapPinMain.offsetTop;
-    var adress = window.mapMode.addressInput.value = leftCoord + ', ' + topCoord;
+    var adress = window.map.addressInput.value = leftCoord + ', ' + topCoord;
 
-    if (activeMode) {
+    if (window.map.isActivated) {
       leftCoord = mapPinMain.offsetLeft + pinImage.width / 2;
       topCoord = mapPinMain.offsetTop + pinImage.height / 2 + HEIGHT_TAIL_MAIN_PIN;
-      adress = window.mapMode.addressInput.value = leftCoord + ', ' + topCoord;
+      adress = window.map.addressInput.value = leftCoord + ', ' + topCoord;
     }
 
     return adress;
@@ -69,7 +68,6 @@
 
   window.pin = {
     getMainPinAddress: getMainPinAddress,
-    activeMode: activeMode,
     stopMainPinEventListener: stopMainPinEventListener,
     renderPins: renderPins
   };
