@@ -3,7 +3,7 @@
 (function () {
   var PIN_MIN_TOP = 200;
   var MAP_FILTER_HEIGHT = 50;
-  var PINS_QUANTITY = 8;
+  var PINS_QUANTITY = 5;
 
   var TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var TIMES = ['12:00', '13:00', '14:00'];
