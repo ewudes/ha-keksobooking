@@ -5,6 +5,9 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var MAX_PINS = 8;
+  var ESC = 'Escape';
+  var ENTER = 'Enter';
+  var MOUSE_BUTTON = 0;
 
   var mapPins = window.map.map.querySelector('.map__pins');
   var mapPinMain = window.map.map.querySelector('.map__pin--main');
@@ -18,14 +21,14 @@
   var mainSection = document.querySelector('main');
 
   var onLeftMouseDownProcess = function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === MOUSE_BUTTON) {
       evt.preventDefault();
       window.map.deleteUnactiveMode();
     }
   };
 
   var onEnterProcess = function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === ENTER) {
       window.map.deleteUnactiveMode();
     }
   };
@@ -60,7 +63,7 @@
     return pinElement;
   };
 
-  var getServerPins = function (data) {
+  var getPinsFromServer = function (data) {
     var fragment = document.createDocumentFragment();
     for (var k = 0; k < data.length; k++) {
       fragment.appendChild(renderPin(data, k));
@@ -70,7 +73,7 @@
 
   var renderPins = function () {
     var serverPins = pins.slice(0, MAX_PINS);
-    getServerPins(serverPins);
+    getPinsFromServer(serverPins);
   };
 
   var requestPins = function () {
@@ -94,21 +97,21 @@
 
   var closeSeverError = function () {
     var errorElements = document.body.querySelector('.error');
-    errorElements.classList.add('hidden');
+    errorElements.remove();
     window.map.blockInput(window.form.formElements);
     window.map.map.classList.add('map--faded');
     requestPins();
   };
 
   var closeLeftMouseError = function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === MOUSE_BUTTON) {
       closeSeverError();
       document.removeEventListener('click', closeLeftMouseError);
     }
   };
 
   var closeEscError = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === ESC) {
       evt.preventDefault();
       closeSeverError();
       document.removeEventListener('keydown', closeEscError);
@@ -120,7 +123,7 @@
     stopMainPinEventListener: stopMainPinEventListener,
     renderPins: renderPins,
     mapPins: mapPins,
-    getServerPins: getServerPins,
+    getPinsFromServer: getPinsFromServer,
     onError: onError,
     requestPins: requestPins,
   };
