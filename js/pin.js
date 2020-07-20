@@ -4,7 +4,6 @@
   var HEIGHT_TAIL_MAIN_PIN = 22;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
-  var MAX_PINS = 8;
   var ESC = 'Escape';
   var ENTER = 'Enter';
   var MOUSE_BUTTON = 0;
@@ -12,6 +11,7 @@
   var mapPins = window.map.map.querySelector('.map__pins');
   var mapPinMain = window.map.map.querySelector('.map__pin--main');
   var pinImage = mapPinMain.querySelector('img');
+  var mapFilters = document.querySelector('.map__filters');
   var pinTemplate = document.body.querySelector('#pin')
     .content
     .querySelector('button');
@@ -72,12 +72,23 @@
   };
 
   var renderPins = function () {
-    var serverPins = pins.slice(0, MAX_PINS);
+    deletePins();
+    var serverPins = window.filter.setFilters(pins);
     getPinsFromServer(serverPins);
   };
 
   var requestPins = function () {
     window.load.load(onSuccess, onError);
+  };
+
+  var deleteServerPins = function (elements) {
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].remove();
+    }
+  };
+  var deletePins = function () {
+    var pinButtons = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    deleteServerPins(pinButtons);
   };
 
   var onSuccess = function (data) {
@@ -117,6 +128,7 @@
       document.removeEventListener('keydown', closeEscError);
     }
   };
+  mapFilters.addEventListener('change', renderPins);
 
   window.pin = {
     getMainPinAddress: getMainPinAddress,
