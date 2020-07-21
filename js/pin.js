@@ -9,6 +9,8 @@
   var MOUSE_BUTTON = 0;
 
   var mapPins = window.map.map.querySelector('.map__pins');
+  var mapSection = document.querySelector('.map');
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinMain = window.map.map.querySelector('.map__pin--main');
   var pinImage = mapPinMain.querySelector('img');
   var mapFilters = document.querySelector('.map__filters');
@@ -54,28 +56,41 @@
 
   var pins = window.data.getMockData();
 
-  var renderPin = function (data, count) {
+  var renderPin = function (data) {
     var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = data[count].location.x - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = data[count].location.y - PIN_HEIGHT + 'px';
-    pinElement.querySelector('img').src = data[count].author.avatar;
-    pinElement.querySelector('img').alt = data[count].offer.title;
+    pinElement.style.left = data.location.x - PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = data.location.y - PIN_HEIGHT + 'px';
+    pinElement.querySelector('img').src = data.author.avatar;
+    pinElement.querySelector('img').alt = data.offer.title;
+    pinElement.addEventListener('click', function () {
+      var activePin = document.querySelector('.map__pin--active');
+
+      if (activePin) {
+        activePin.classList.remove('map__pin--active');
+      }
+
+      mapSection.insertBefore(window.card.renderCard(data), mapFiltersContainer);
+      pinElement.classList.add('map__pin--active');
+
+      window.card.cardCloseButton.addEventListener('click', window.card.onLeftMouseCloseCard);
+      document.addEventListener('keydown', window.card.onEscCloseCard);
+    });
     return pinElement;
   };
 
   var getPinsFromServer = function (data) {
     var fragment = document.createDocumentFragment();
     for (var k = 0; k < data.length; k++) {
-      fragment.appendChild(renderPin(data, k));
+      fragment.appendChild(renderPin(data[k]));
     }
-    return mapPins.appendChild(fragment);
+    return window.pin.mapPins.appendChild(fragment);
   };
 
-  var renderPins = function () {
+  var renderPins = window.debounce(function () {
     deletePins();
     var serverPins = window.filter.setFilters(pins);
     getPinsFromServer(serverPins);
-  };
+  });
 
   var requestPins = function () {
     window.load.load(onSuccess, onError);
@@ -129,6 +144,7 @@
     }
   };
   mapFilters.addEventListener('change', renderPins);
+  mapFilters.addEventListener('change', window.card.closeAnnouncements);
 
   window.pin = {
     getMainPinAddress: getMainPinAddress,
@@ -137,6 +153,6 @@
     mapPins: mapPins,
     getPinsFromServer: getPinsFromServer,
     onError: onError,
-    requestPins: requestPins,
+    requestPins: requestPins
   };
 })();
