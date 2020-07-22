@@ -7,13 +7,21 @@
   var ESC = 'Escape';
   var ENTER = 'Enter';
   var MOUSE_BUTTON = 0;
+  var MIN_COORDINATE_Y = 130;
+  var MAX_COORDINATE_Y = 630;
+  var MIN_COORDINATE_X = 0;
 
+  var mapOverlay = document.querySelector('.map__overlay');
   var mapPins = window.map.map.querySelector('.map__pins');
   var mapSection = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinMain = window.map.map.querySelector('.map__pin--main');
+  var maxWidth = mapOverlay.offsetWidth;
   var pinImage = mapPinMain.querySelector('img');
   var mapFilters = document.querySelector('.map__filters');
+  var halfPinWidth = mapPinMain.offsetWidth / 2;
+  var pinHeightWithoutTail = mapPinMain.offsetHeight;
+  var pinHeight = pinHeightWithoutTail + HEIGHT_TAIL_MAIN_PIN;
   var pinTemplate = document.body.querySelector('#pin')
     .content
     .querySelector('button');
@@ -35,10 +43,48 @@
     }
   };
 
+  var onEscProcess = function (evt) {
+    if (evt.key === ESC) {
+      window.map.deleteUnactiveMode();
+    }
+  };
+
   var stopMainPinEventListener = function () {
     mapPinMain.removeEventListener('keydown', onEnterProcess);
     mapPinMain.removeEventListener('mousedown', onLeftMouseDownProcess);
+    mapPinMain.removeEventListener('keydown', onEscProcess);
   };
+
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var mapCoordinate = mapOverlay.getBoundingClientRect();
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var coordinateX = moveEvt.clientX - mapCoordinate.left;
+      var coordinateY = moveEvt.clientY - mapCoordinate.top;
+
+      coordinateX = Math.max(MIN_COORDINATE_X, Math.min(maxWidth, coordinateX)) - halfPinWidth;
+      coordinateY = Math.max(MIN_COORDINATE_Y, Math.min(MAX_COORDINATE_Y, coordinateY)) - pinHeight;
+
+      mapPinMain.style.left = coordinateX + 'px';
+      mapPinMain.style.top = coordinateY + 'px';
+
+      getMainPinAddress();
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
   var getMainPinAddress = function () {
     var leftCoord = mapPinMain.offsetLeft;
