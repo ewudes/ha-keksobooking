@@ -201,6 +201,7 @@
     onError: onError,
     requestPins: requestPins,
     deletePins: deletePins,
-    mainSection: mainSection
+    mainSection: mainSection,
+    mapFilters: mapFilters
   };
 })();

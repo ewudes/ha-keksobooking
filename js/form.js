@@ -83,6 +83,7 @@
     evt.preventDefault();
     window.load.upload(new FormData(form), showSuccessMessage, window.pin.onError);
     form.reset();
+    window.pin.mapFilters.reset();
     window.map.setUnactiveMode();
     window.pin.deletePins();
   };
@@ -90,6 +91,7 @@
   var resetForm = function (evt) {
     evt.preventDefault();
     form.reset();
+    window.pin.mapFilters.reset();
     window.pin.getMainPinAddress();
     setHousingPrice();
   };
