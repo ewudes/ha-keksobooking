@@ -17,8 +17,6 @@
 
   var successElement = successTemplate.cloneNode(true);
 
-  var adFormReset = document.querySelector('.ad-form__reset');
-
   var minPricesForNight = {
     bungalo: 0,
     flat: 1000,
@@ -65,10 +63,14 @@
     });
     document.addEventListener('keydown', closeEscSuccess);
     window.pin.mainSection.insertAdjacentElement('afterbegin', successElement);
+    window.map.setUnactiveMode();
   };
 
   var closeSuccessMessage = function () {
     successElement.remove(successElement);
+    document.removeEventListener('click', function () {
+      closeSuccessMessage(successElement);
+    });
   };
 
   var closeEscSuccess = function (evt) {
@@ -82,18 +84,6 @@
   var onFormSubmit = function (evt) {
     evt.preventDefault();
     window.load.upload(new FormData(form), showSuccessMessage, window.pin.onError);
-    form.reset();
-    window.pin.mapFilters.reset();
-    window.map.setUnactiveMode();
-    window.pin.deletePins();
-  };
-
-  var resetForm = function (evt) {
-    evt.preventDefault();
-    form.reset();
-    window.pin.mapFilters.reset();
-    window.pin.getMainPinAddress();
-    setHousingPrice();
   };
 
   typeHousing.addEventListener('change', setHousingPrice);
@@ -103,7 +93,6 @@
   capacity.addEventListener('change', setRoomCapacity);
   formSubmit.addEventListener('click', setRoomCapacity);
   form.addEventListener('submit', onFormSubmit);
-  adFormReset.addEventListener('click', resetForm);
 
   window.form = {
     form: form,
