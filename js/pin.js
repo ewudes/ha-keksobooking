@@ -199,6 +199,8 @@
     mapPins: mapPins,
     getPinsFromServer: getPinsFromServer,
     onError: onError,
-    requestPins: requestPins
+    requestPins: requestPins,
+    deletePins: deletePins,
+    mainSection: mainSection
   };
 })();

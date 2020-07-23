@@ -29,8 +29,21 @@
     enabledElements(window.form.formElements);
     setCursorPointer(mapFilter);
     setCursorPointer(mapFeature);
-    window.map.isActivated = true;
+    isActivated = true;
     window.pin.getMainPinAddress();
+  };
+
+  var setUnactiveMode = function () {
+    map.classList.add('map--faded');
+    addressInput.classList.add('ad-form--disabled');
+    window.form.form.classList.add('ad-form--disabled');
+    blockInput(window.form.formElements);
+    setCursorDefault(mapFilter);
+    setCursorDefault(mapFeature);
+    isActivated = false;
+    window.pin.getMainPinAddress();
+    window.pin.requestPins();
+    window.card.closeAnnouncements();
   };
 
   var setCursorDefault = function (elements) {
@@ -53,6 +66,7 @@
     blockInput: blockInput,
     setCursorDefault: setCursorDefault,
     deleteUnactiveMode: deleteUnactiveMode,
-    isActivated: isActivated
+    isActivated: isActivated,
+    setUnactiveMode: setUnactiveMode
   };
 })();
