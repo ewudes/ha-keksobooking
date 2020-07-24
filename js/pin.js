@@ -28,6 +28,7 @@
   var errorTemplate = document.querySelector('#error')
     .content
     .querySelector('.error');
+  var errorElement = errorTemplate.cloneNode(true);
   var mainSection = document.querySelector('main');
 
   var onLeftMouseDownProcess = function (evt) {
@@ -159,7 +160,6 @@
   };
 
   var onError = function (errorMessage) {
-    var errorElement = errorTemplate.cloneNode(true);
     var messageText = errorElement.querySelector('p');
     messageText.textContent = errorMessage;
     document.addEventListener('click', closeLeftMouseError);
@@ -167,17 +167,14 @@
     mainSection.insertAdjacentElement('afterbegin', errorElement);
   };
 
-  var closeSeverError = function () {
-    var errorElements = document.body.querySelector('.error');
-    errorElements.remove();
-    window.map.blockInput(window.form.formElements);
-    window.map.map.classList.add('map--faded');
+  var closeSeverError = function (el) {
+    el.remove();
     requestPins();
   };
 
   var closeLeftMouseError = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
-      closeSeverError();
+      closeSeverError(errorElement);
       document.removeEventListener('click', closeLeftMouseError);
     }
   };
@@ -185,7 +182,7 @@
   var closeEscError = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      closeSeverError();
+      closeSeverError(errorElement);
       document.removeEventListener('keydown', closeEscError);
     }
   };
@@ -201,6 +198,7 @@
     onError: onError,
     requestPins: requestPins,
     deletePins: deletePins,
-    mainSection: mainSection
+    mainSection: mainSection,
+    mapFilters: mapFilters
   };
 })();

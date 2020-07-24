@@ -92,7 +92,6 @@
       mapCard.remove();
       removeActivePin();
     }
-
     document.removeEventListener('keydown', onEscCloseCard);
   };
 

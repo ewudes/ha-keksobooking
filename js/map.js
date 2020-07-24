@@ -6,6 +6,7 @@
   var mapFeature = document.querySelectorAll('.map__feature');
   var addressInput = document.querySelector('fieldset input[name = address]');
   var isActivated = false;
+  var mainPin = document.querySelector('.map__pin--main');
 
   var blockInput = function (elements) {
     for (var i = 0; i < elements.length; i++) {
@@ -41,9 +42,13 @@
     setCursorDefault(mapFilter);
     setCursorDefault(mapFeature);
     isActivated = false;
+    window.form.form.reset();
+    window.card.closeAnnouncements();
+    window.pin.mapFilters.reset();
+    window.pin.deletePins();
     window.pin.getMainPinAddress();
     window.pin.requestPins();
-    window.card.closeAnnouncements();
+    mainPin.style = 'left: 570px; top: 375px;';
   };
 
   var setCursorDefault = function (elements) {
