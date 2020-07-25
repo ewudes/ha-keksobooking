@@ -14,6 +14,7 @@
   var successTemplate = document.querySelector('#success')
     .content
     .querySelector('.success');
+  var adFormReset = document.querySelector('.ad-form__reset');
 
   var successElement = successTemplate.cloneNode(true);
 
@@ -86,6 +87,11 @@
     window.load.upload(new FormData(form), showSuccessMessage, window.pin.onError);
   };
 
+  var resetForm = function (evt) {
+    evt.preventDefault();
+    window.map.setUnactiveMode();
+  };
+
   typeHousing.addEventListener('change', setHousingPrice);
   timeIn.addEventListener('change', setTimeInToOut);
   timeOut.addEventListener('change', setTimeOutToIn);
@@ -93,6 +99,7 @@
   capacity.addEventListener('change', setRoomCapacity);
   formSubmit.addEventListener('click', setRoomCapacity);
   form.addEventListener('submit', onFormSubmit);
+  adFormReset.addEventListener('click', resetForm);
 
   window.form = {
     form: form,

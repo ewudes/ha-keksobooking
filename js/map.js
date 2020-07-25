@@ -47,6 +47,7 @@
     window.pin.mapFilters.reset();
     window.pin.deletePins();
     window.pin.getMainPinAddress();
+    window.preview.removePreviewPhotos();
     window.pin.requestPins();
     mainPin.style = 'left: 570px; top: 375px;';
   };
