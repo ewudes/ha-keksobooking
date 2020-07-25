@@ -9,7 +9,7 @@
 
   var adElement = cardTemplate.cloneNode(true);
 
-  var cardCloseButton = adElement.querySelector('.popup__close');
+  var closeButton = adElement.querySelector('.popup__close');
 
   var typeValue = {
     flat: 'Квартира',
@@ -20,14 +20,19 @@
 
   var setCardFeatures = function (cardElement, data) {
     var featuresContainer = cardElement.querySelector('.popup__features');
-    if (data.length >= 1) {
-      var cardFeatures = cardElement.querySelectorAll('.popup__feature');
-      for (var i = 0; i < cardFeatures.length; i++) {
-        cardFeatures[i].classList.add('hidden');
-        for (var j = 0; j < data.length; j++) {
-          cardFeatures[j].classList.remove('hidden');
-        }
-      }
+    if (data.length) {
+      var cardFeatures = Array.from(cardElement.querySelectorAll('.popup__feature'));
+
+      cardFeatures.forEach(function (element) {
+        element.classList.add('hidden');
+      });
+
+      data.forEach(function (feature) {
+        var featureElement = cardElement.querySelector('.popup__feature--' + feature);
+        featureElement.classList.remove('hidden');
+      });
+
+      featuresContainer.classList.remove('hidden');
     } else {
       featuresContainer.classList.add('hidden');
     }
@@ -35,17 +40,22 @@
 
   var setCardPhotos = function (cardElement, images) {
     var photosContainer = cardElement.querySelector('.popup__photos');
-    if (images.length >= 1) {
+
+    if (images.length) {
+
       var photos = photosContainer.querySelector('.popup__photo');
-      var lastPhotos = cardElement.querySelectorAll('.popup__photo');
-      for (var j = 0; j < lastPhotos.length; j++) {
-        lastPhotos[j].remove();
-      }
-      for (var k = 0; k < images.length; k++) {
-        photos.src = images[k];
-        var cloneImage = photos.cloneNode(true);
-        photosContainer.appendChild(cloneImage);
-      }
+      var lastPhotos = Array.from(cardElement.querySelectorAll('.popup__photo'));
+
+      lastPhotos.forEach(function (element) {
+        element.remove();
+      });
+
+      images.forEach(function (image) {
+        photos.src = image;
+        photosContainer.appendChild(photos.cloneNode(true));
+      });
+
+      photosContainer.classList.remove('hidden');
     } else {
       photosContainer.classList.add('hidden');
     }
@@ -67,16 +77,16 @@
     }
   };
 
-  var onLeftMouseCloseCard = function (evt) {
+  var onLeftMouseClose = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
-      closeAnnouncements();
+      closeDeclaration();
     }
   };
 
-  var onEscCloseCard = function (evt) {
+  var onEscClose = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      closeAnnouncements();
+      closeDeclaration();
     }
   };
 
@@ -85,17 +95,17 @@
     activePin.classList.remove('map__pin--active');
   };
 
-  var closeAnnouncements = function () {
+  var closeDeclaration = function () {
     var mapCard = document.querySelector('.map__card');
 
     if (mapCard) {
       mapCard.remove();
       removeActivePin();
     }
-    document.removeEventListener('keydown', onEscCloseCard);
+    document.removeEventListener('keydown', onEscClose);
   };
 
-  var renderCard = function (data) {
+  var render = function (data) {
     setCardTextContent(adElement, '.popup__title', data.offer.title);
     setCardTextContent(adElement, '.popup__text--address', data.offer.adderss);
     setCardTextContent(adElement, '.popup__text--price', data.offer.price + ' ₽/ночь');
@@ -110,10 +120,10 @@
   };
 
   window.card = {
-    closeAnnouncements: closeAnnouncements,
-    cardCloseButton: cardCloseButton,
-    onLeftMouseCloseCard: onLeftMouseCloseCard,
-    onEscCloseCard: onEscCloseCard,
-    renderCard: renderCard
+    closeDeclaration: closeDeclaration,
+    closeButton: closeButton,
+    onLeftMouseClose: onLeftMouseClose,
+    onEscClose: onEscClose,
+    render: render
   };
 })();

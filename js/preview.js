@@ -38,7 +38,7 @@
     }
   };
 
-  var removePreviewPhotos = function () {
+  var remove = function () {
     avatarPreviewImg.src = DEFAULT_PREVIEW;
     avatarPreviewImg.width = AVATAR_WIDTH;
     avatarPreviewImg.height = AVATAR_HEIGHT;
@@ -57,7 +57,7 @@
   });
 
   window.preview = {
-    removePreviewPhotos: removePreviewPhotos
+    remove: remove
   };
 
 })();

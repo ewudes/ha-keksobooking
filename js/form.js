@@ -2,14 +2,14 @@
 
 (function () {
   var ESC = 'Escape';
-  var form = document.querySelector('.ad-form');
+  var adForm = document.querySelector('.ad-form');
   var formSubmit = document.querySelector('.ad-form__submit');
-  var typeHousing = form.querySelector('#type');
-  var priceInput = form.querySelector('#price');
-  var timeIn = form.querySelector('#timein');
-  var timeOut = form.querySelector('#timeout');
-  var rooms = form.querySelector('#room_number');
-  var capacity = form.querySelector('#capacity');
+  var typeHousing = adForm.querySelector('#type');
+  var priceInput = adForm.querySelector('#price');
+  var timeIn = adForm.querySelector('#timein');
+  var timeOut = adForm.querySelector('#timeout');
+  var rooms = adForm.querySelector('#room_number');
+  var capacity = adForm.querySelector('#capacity');
   var formElements = document.querySelectorAll('fieldset, select');
   var successTemplate = document.querySelector('#success')
     .content
@@ -30,20 +30,20 @@
     MIN: 0
   };
 
-  var setHousingPrice = function () {
+  var onPriceClick = function () {
     priceInput.placeholder = minPricesForNight[typeHousing.value];
     priceInput.min = minPricesForNight[typeHousing.value];
   };
 
-  var setTimeInToOut = function () {
+  var onCheckOutClick = function () {
     timeOut.value = timeIn.value;
   };
 
-  var setTimeOutToIn = function () {
+  var onCheckInClick = function () {
     timeIn.value = timeOut.value;
   };
 
-  var setRoomCapacity = function () {
+  var onCapacityClick = function () {
     var roomsValue = Number(rooms.value);
     var capacityValue = Number(capacity.value);
 
@@ -60,49 +60,49 @@
 
   var showSuccessMessage = function () {
     document.addEventListener('click', function () {
-      closeSuccessMessage(successElement);
+      onCloseSuccessMessage(successElement);
     });
-    document.addEventListener('keydown', closeEscSuccess);
+    document.addEventListener('keydown', onCloseSuccessEsc);
     window.pin.mainSection.insertAdjacentElement('afterbegin', successElement);
     window.map.setUnactiveMode();
   };
 
-  var closeSuccessMessage = function () {
+  var onCloseSuccessMessage = function () {
     successElement.remove(successElement);
     document.removeEventListener('click', function () {
-      closeSuccessMessage(successElement);
+      onCloseSuccessMessage(successElement);
     });
   };
 
-  var closeEscSuccess = function (evt) {
+  var onCloseSuccessEsc = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      closeSuccessMessage(successElement);
-      document.removeEventListener('keydown', closeEscSuccess);
+      onCloseSuccessMessage(successElement);
+      document.removeEventListener('keydown', onCloseSuccessEsc);
     }
   };
 
-  var onFormSubmit = function (evt) {
+  var onFormSubmitClick = function (evt) {
     evt.preventDefault();
-    window.load.upload(new FormData(form), showSuccessMessage, window.pin.onError);
+    window.load.uploadData(new FormData(adForm), showSuccessMessage, window.pin.onError);
   };
 
-  var resetForm = function (evt) {
+  var onFormResetClick = function (evt) {
     evt.preventDefault();
     window.map.setUnactiveMode();
   };
 
-  typeHousing.addEventListener('change', setHousingPrice);
-  timeIn.addEventListener('change', setTimeInToOut);
-  timeOut.addEventListener('change', setTimeOutToIn);
-  rooms.addEventListener('change', setRoomCapacity);
-  capacity.addEventListener('change', setRoomCapacity);
-  formSubmit.addEventListener('click', setRoomCapacity);
-  form.addEventListener('submit', onFormSubmit);
-  adFormReset.addEventListener('click', resetForm);
+  typeHousing.addEventListener('change', onPriceClick);
+  timeIn.addEventListener('change', onCheckOutClick);
+  timeOut.addEventListener('change', onCheckInClick);
+  rooms.addEventListener('change', onCapacityClick);
+  capacity.addEventListener('change', onCapacityClick);
+  formSubmit.addEventListener('click', onCapacityClick);
+  adForm.addEventListener('submit', onFormSubmitClick);
+  adFormReset.addEventListener('click', onFormResetClick);
 
   window.form = {
-    form: form,
+    adForm: adForm,
     formElements: formElements
   };
 })();

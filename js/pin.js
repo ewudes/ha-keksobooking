@@ -12,10 +12,10 @@
   var MIN_COORDINATE_X = 0;
 
   var mapOverlay = document.querySelector('.map__overlay');
-  var mapPins = window.map.map.querySelector('.map__pins');
+  var mapPins = window.map.mapContainer.querySelector('.map__pins');
   var mapSection = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
-  var mapPinMain = window.map.map.querySelector('.map__pin--main');
+  var mapPinMain = window.map.mapContainer.querySelector('.map__pin--main');
   var maxWidth = mapOverlay.offsetWidth;
   var pinImage = mapPinMain.querySelector('img');
   var mapFilters = document.querySelector('.map__filters');
@@ -30,6 +30,8 @@
     .querySelector('.error');
   var errorElement = errorTemplate.cloneNode(true);
   var mainSection = document.querySelector('main');
+
+  var pins = window.load.load;
 
   var onLeftMouseDownProcess = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
@@ -101,8 +103,6 @@
     return adress;
   };
 
-  var pins = window.data.getMockData();
-
   var renderPin = function (data) {
     var pinElement = pinTemplate.cloneNode(true);
     pinElement.style.left = data.location.x - PIN_WIDTH / 2 + 'px';
@@ -116,39 +116,40 @@
         activePin.classList.remove('map__pin--active');
       }
 
-      mapSection.insertBefore(window.card.renderCard(data), mapFiltersContainer);
+      mapSection.insertBefore(window.card.render(data), mapFiltersContainer);
       pinElement.classList.add('map__pin--active');
 
-      window.card.cardCloseButton.addEventListener('click', window.card.onLeftMouseCloseCard);
-      document.addEventListener('keydown', window.card.onEscCloseCard);
+      window.card.closeButton.addEventListener('click', window.card.onLeftMouseClose);
+      document.addEventListener('keydown', window.card.onEscClose);
     });
     return pinElement;
   };
 
-  var getPinsFromServer = function (data) {
+  var getFromServer = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < data.length; k++) {
-      fragment.appendChild(renderPin(data[k]));
-    }
+    data.forEach(function (DataPins) {
+      fragment.appendChild(renderPin(DataPins));
+    });
     return window.pin.mapPins.appendChild(fragment);
   };
 
-  var renderPins = window.debounce(function () {
-    deletePins();
+  var render = window.debounce(function () {
+    remove();
     var serverPins = window.filter.setFilters(pins);
-    getPinsFromServer(serverPins);
+    getFromServer(serverPins);
   });
 
-  var requestPins = function () {
-    window.load.load(onSuccess, onError);
+  var request = function () {
+    window.load.loadData(onSuccess, onError);
   };
 
-  var deleteServerPins = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].remove();
-    }
+  var deleteServerPins = function (serverPins) {
+    var elements = Array.from(serverPins);
+    elements.forEach(function (element) {
+      element.remove();
+    });
   };
-  var deletePins = function () {
+  var remove = function () {
     var pinButtons = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
     deleteServerPins(pinButtons);
   };
@@ -162,43 +163,43 @@
   var onError = function (errorMessage) {
     var messageText = errorElement.querySelector('p');
     messageText.textContent = errorMessage;
-    document.addEventListener('click', closeLeftMouseError);
-    document.addEventListener('keydown', closeEscError);
+    document.addEventListener('click', onCloseErrorLeftMouse);
+    document.addEventListener('keydown', onCloseErrorEsc);
     mainSection.insertAdjacentElement('afterbegin', errorElement);
   };
 
-  var closeSeverError = function (el) {
+  var onCloseSeverError = function (el) {
     el.remove();
-    requestPins();
+    request();
   };
 
-  var closeLeftMouseError = function (evt) {
+  var onCloseErrorLeftMouse = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
-      closeSeverError(errorElement);
-      document.removeEventListener('click', closeLeftMouseError);
+      onCloseSeverError(errorElement);
+      document.removeEventListener('click', onCloseErrorLeftMouse);
     }
   };
 
-  var closeEscError = function (evt) {
+  var onCloseErrorEsc = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      closeSeverError(errorElement);
-      document.removeEventListener('keydown', closeEscError);
+      onCloseSeverError(errorElement);
+      document.removeEventListener('keydown', onCloseErrorEsc);
     }
   };
-  mapFilters.addEventListener('change', renderPins);
-  mapFilters.addEventListener('change', window.card.closeAnnouncements);
+  mapFilters.addEventListener('change', render);
+  mapFilters.addEventListener('change', window.card.closeDeclaration);
 
   window.pin = {
+    mapPins: mapPins,
+    mainSection: mainSection,
+    mapFilters: mapFilters,
     getMainPinAddress: getMainPinAddress,
     stopMainPinEventListener: stopMainPinEventListener,
-    renderPins: renderPins,
-    mapPins: mapPins,
-    getPinsFromServer: getPinsFromServer,
+    render: render,
+    getFromServer: getFromServer,
     onError: onError,
-    requestPins: requestPins,
-    deletePins: deletePins,
-    mainSection: mainSection,
-    mapFilters: mapFilters
+    request: request,
+    remove: remove
   };
 })();
