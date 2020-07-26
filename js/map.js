@@ -48,6 +48,7 @@
     window.form.adForm.reset();
     window.card.closeDeclaration();
     window.pin.mapFilters.reset();
+    window.form.onPriceClick();
     window.pin.remove();
     window.pin.getMainPinAddress();
     window.preview.remove();

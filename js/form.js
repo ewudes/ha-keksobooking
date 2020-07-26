@@ -103,6 +103,7 @@
 
   window.form = {
     adForm: adForm,
-    formElements: formElements
+    formElements: formElements,
+    onPriceClick: onPriceClick
   };
 })();
