@@ -1,31 +1,34 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
+  var DEFAULT_POSITION = 'left: 570px; top: 375px;';
+  var mapContainer = document.querySelector('.map');
   var mapFilter = document.querySelectorAll('.map__filter');
   var mapFeature = document.querySelectorAll('.map__feature');
   var addressInput = document.querySelector('fieldset input[name = address]');
   var isActivated = false;
   var mainPin = document.querySelector('.map__pin--main');
 
-  var blockInput = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].setAttribute('disabled', true);
-    }
+  var blockInput = function (inputs) {
+    var elements = Array.from(inputs);
+    elements.forEach(function (element) {
+      element.setAttribute('disabled', true);
+    });
   };
 
-  var enabledElements = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].removeAttribute('disabled');
-    }
+  var enabledElements = function (inputs) {
+    var elements = Array.from(inputs);
+    elements.forEach(function (element) {
+      element.removeAttribute('disabled');
+    });
     addressInput.setAttribute('readonly', true);
   };
 
   var deleteUnactiveMode = function () {
-    map.classList.remove('map--faded');
+    mapContainer.classList.remove('map--faded');
     addressInput.classList.add('ad-form--disabled');
-    window.form.form.classList.remove('ad-form--disabled');
-    window.pin.renderPins(window.data.pins);
+    window.form.adForm.classList.remove('ad-form--disabled');
+    window.pin.render();
     window.pin.stopMainPinEventListener();
     enabledElements(window.form.formElements);
     setCursorPointer(mapFilter);
@@ -35,37 +38,40 @@
   };
 
   var setUnactiveMode = function () {
-    map.classList.add('map--faded');
+    mapContainer.classList.add('map--faded');
     addressInput.classList.add('ad-form--disabled');
-    window.form.form.classList.add('ad-form--disabled');
+    window.form.adForm.classList.add('ad-form--disabled');
     blockInput(window.form.formElements);
     setCursorDefault(mapFilter);
     setCursorDefault(mapFeature);
     isActivated = false;
-    window.form.form.reset();
-    window.card.closeAnnouncements();
+    window.form.adForm.reset();
+    window.card.closeDeclaration();
     window.pin.mapFilters.reset();
-    window.pin.deletePins();
+    window.form.onPriceClick();
+    window.pin.remove();
     window.pin.getMainPinAddress();
-    window.preview.removePreviewPhotos();
-    window.pin.requestPins();
-    mainPin.style = 'left: 570px; top: 375px;';
+    window.preview.remove();
+    window.pin.request();
+    mainPin.style = DEFAULT_POSITION;
   };
 
-  var setCursorDefault = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].style.cursor = 'default';
-    }
+  var setCursorDefault = function (inputs) {
+    var elements = Array.from(inputs);
+    elements.forEach(function (element) {
+      element.style.cursor = 'default';
+    });
   };
 
-  var setCursorPointer = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].style.cursor = 'pointer';
-    }
+  var setCursorPointer = function (inputs) {
+    var elements = Array.from(inputs);
+    elements.forEach(function (element) {
+      element.style.cursor = 'pointer';
+    });
   };
 
   window.map = {
-    map: map,
+    mapContainer: mapContainer,
     mapFilter: mapFilter,
     mapFeature: mapFeature,
     addressInput: addressInput,

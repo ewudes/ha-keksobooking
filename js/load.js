@@ -36,14 +36,14 @@
     return xhr;
   };
 
-  var load = function (onSuccess, onError) {
+  var loadData = function (onSuccess, onError) {
     var xhr = createRequest(onSuccess, onError);
 
     xhr.open('GET', Url.GET);
     xhr.send();
   };
 
-  var upload = function (data, onSuccess, onError) {
+  var uploadData = function (data, onSuccess, onError) {
     var xhr = createRequest(onSuccess, onError);
 
     xhr.open('POST', Url.POST);
@@ -51,7 +51,7 @@
   };
 
   window.load = {
-    load: load,
-    upload: upload
+    loadData: loadData,
+    uploadData: uploadData
   };
 })();
