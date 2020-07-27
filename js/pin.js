@@ -10,12 +10,13 @@
   var MIN_COORDINATE_Y = 130;
   var MAX_COORDINATE_Y = 630;
   var MIN_COORDINATE_X = 0;
+  var POINTER = 87;
 
   var mapOverlay = document.querySelector('.map__overlay');
-  var mapPins = window.map.mapContainer.querySelector('.map__pins');
+  var mapPins = window.map.container.querySelector('.map__pins');
   var mapSection = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
-  var mapPinMain = window.map.mapContainer.querySelector('.map__pin--main');
+  var mapPinMain = window.map.container.querySelector('.map__pin--main');
   var maxWidth = mapOverlay.offsetWidth;
   var pinImage = mapPinMain.querySelector('img');
   var mapFilters = document.querySelector('.map__filters');
@@ -31,7 +32,7 @@
   var errorElement = errorTemplate.cloneNode(true);
   var mainSection = document.querySelector('main');
 
-  var pins = window.load.load;
+  var pins = window.load.loadData;
 
   var onLeftMouseDownProcess = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
@@ -73,7 +74,7 @@
       coordinateY = Math.max(MIN_COORDINATE_Y, Math.min(MAX_COORDINATE_Y, coordinateY)) - pinHeight;
 
       mapPinMain.style.left = coordinateX + 'px';
-      mapPinMain.style.top = coordinateY + 'px';
+      mapPinMain.style.top = (coordinateY + POINTER) + 'px';
 
       getMainPinAddress();
     };
@@ -127,15 +128,15 @@
 
   var getFromServer = function (data) {
     var fragment = document.createDocumentFragment();
-    data.forEach(function (DataPins) {
-      fragment.appendChild(renderPin(DataPins));
+    data.forEach(function (dataPins) {
+      fragment.appendChild(renderPin(dataPins));
     });
     return window.pin.mapPins.appendChild(fragment);
   };
 
-  var render = window.debounce(function () {
+  var renderPins = window.debounce(function () {
     remove();
-    var serverPins = window.filter.setFilters(pins);
+    var serverPins = window.filter.setSort(pins);
     getFromServer(serverPins);
   });
 
@@ -156,6 +157,8 @@
 
   var onSuccess = function (data) {
     pins = data;
+    renderPins();
+    window.map.enabledElements(mapFilters);
     mapPinMain.addEventListener('keydown', onEnterProcess);
     mapPinMain.addEventListener('mousedown', onLeftMouseDownProcess);
   };
@@ -187,8 +190,12 @@
       document.removeEventListener('keydown', onCloseErrorEsc);
     }
   };
-  mapFilters.addEventListener('change', render);
-  mapFilters.addEventListener('change', window.card.closeDeclaration);
+
+  mapPinMain.addEventListener('mousedown', onLeftMouseDownProcess);
+  mapPinMain.addEventListener('keydown', onEnterProcess);
+
+  // mapFilters.addEventListener('change', onRenderChange);
+  mapFilters.addEventListener('change', window.card.onCloseDeclaration);
 
   window.pin = {
     mapPins: mapPins,
@@ -196,7 +203,8 @@
     mapFilters: mapFilters,
     getMainPinAddress: getMainPinAddress,
     stopMainPinEventListener: stopMainPinEventListener,
-    render: render,
+    // onRenderChange: onRenderChange,
+    renderPins: renderPins,
     getFromServer: getFromServer,
     onError: onError,
     request: request,

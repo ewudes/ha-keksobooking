@@ -1,9 +1,8 @@
 'use strict';
 
 (function () {
-  window.map.blockInput(window.form.formElements);
-  window.map.setCursorDefault(window.map.mapFilter);
-  window.map.setCursorDefault(window.map.mapFeature);
+  window.map.blockInput(window.form.elements);
+  window.map.setCursorDefault(window.map.filter);
+  window.map.setCursorDefault(window.map.feature);
   window.pin.getMainPinAddress();
-  window.pin.request();
 })();

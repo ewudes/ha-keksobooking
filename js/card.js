@@ -79,14 +79,14 @@
 
   var onLeftMouseClose = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
-      closeDeclaration();
+      onCloseDeclaration();
     }
   };
 
   var onEscClose = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      closeDeclaration();
+      onCloseDeclaration();
     }
   };
 
@@ -95,7 +95,7 @@
     activePin.classList.remove('map__pin--active');
   };
 
-  var closeDeclaration = function () {
+  var onCloseDeclaration = function () {
     var mapCard = document.querySelector('.map__card');
 
     if (mapCard) {
@@ -120,7 +120,7 @@
   };
 
   window.card = {
-    closeDeclaration: closeDeclaration,
+    onCloseDeclaration: onCloseDeclaration,
     closeButton: closeButton,
     onLeftMouseClose: onLeftMouseClose,
     onEscClose: onEscClose,

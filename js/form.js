@@ -2,19 +2,20 @@
 
 (function () {
   var ESC = 'Escape';
-  var adForm = document.querySelector('.ad-form');
-  var formSubmit = document.querySelector('.ad-form__submit');
-  var typeHousing = adForm.querySelector('#type');
-  var priceInput = adForm.querySelector('#price');
-  var timeIn = adForm.querySelector('#timein');
-  var timeOut = adForm.querySelector('#timeout');
-  var rooms = adForm.querySelector('#room_number');
-  var capacity = adForm.querySelector('#capacity');
-  var formElements = document.querySelectorAll('fieldset, select');
+  var ad = document.querySelector('.ad-form');
+  var submit = document.querySelector('.ad-form__submit');
+  var typeHousing = ad.querySelector('#type');
+  var priceInput = ad.querySelector('#price');
+  var timeIn = ad.querySelector('#timein');
+  var timeOut = ad.querySelector('#timeout');
+  var rooms = ad.querySelector('#room_number');
+  var capacity = ad.querySelector('#capacity');
+  var elements = document.querySelectorAll('fieldset, select');
+  var inputs = document.querySelectorAll('input, select');
   var successTemplate = document.querySelector('#success')
     .content
     .querySelector('.success');
-  var adFormReset = document.querySelector('.ad-form__reset');
+  var reset = document.querySelector('.ad-form__reset');
 
   var successElement = successTemplate.cloneNode(true);
 
@@ -30,20 +31,20 @@
     MIN: 0
   };
 
-  var onPriceClick = function () {
+  var onPriceChange = function () {
     priceInput.placeholder = minPricesForNight[typeHousing.value];
     priceInput.min = minPricesForNight[typeHousing.value];
   };
 
-  var onCheckOutClick = function () {
+  var onCheckOutChange = function () {
     timeOut.value = timeIn.value;
   };
 
-  var onCheckInClick = function () {
+  var onCheckInChange = function () {
     timeIn.value = timeOut.value;
   };
 
-  var onCapacityClick = function () {
+  var onCapacityChange = function () {
     var roomsValue = Number(rooms.value);
     var capacityValue = Number(capacity.value);
 
@@ -82,28 +83,48 @@
     }
   };
 
-  var onFormSubmitClick = function (evt) {
+  var resetValidation = function () {
+    var fie = Array.from(inputs);
+    fie.forEach(function (el) {
+      el.style.borderColor = '';
+    });
+  };
+
+  var onValidationClick = function () {
+    var fields = Array.from(inputs);
+    fields.forEach(function (el) {
+      if (!el.validity.valid) {
+        el.style.borderColor = '#eb4034';
+      } else {
+        el.style.borderColor = '#d9d9d3';
+      }
+    });
+  };
+
+  var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.load.uploadData(new FormData(adForm), showSuccessMessage, window.pin.onError);
+    window.load.uploadData(new FormData(ad), showSuccessMessage, window.pin.onError);
   };
 
   var onFormResetClick = function (evt) {
     evt.preventDefault();
     window.map.setUnactiveMode();
+    resetValidation();
   };
 
-  typeHousing.addEventListener('change', onPriceClick);
-  timeIn.addEventListener('change', onCheckOutClick);
-  timeOut.addEventListener('change', onCheckInClick);
-  rooms.addEventListener('change', onCapacityClick);
-  capacity.addEventListener('change', onCapacityClick);
-  formSubmit.addEventListener('click', onCapacityClick);
-  adForm.addEventListener('submit', onFormSubmitClick);
-  adFormReset.addEventListener('click', onFormResetClick);
+  typeHousing.addEventListener('change', onPriceChange);
+  timeIn.addEventListener('change', onCheckOutChange);
+  timeOut.addEventListener('change', onCheckInChange);
+  rooms.addEventListener('change', onCapacityChange);
+  capacity.addEventListener('change', onCapacityChange);
+  submit.addEventListener('click', onCapacityChange);
+  submit.addEventListener('click', onValidationClick);
+  ad.addEventListener('submit', onFormSubmit);
+  reset.addEventListener('click', onFormResetClick);
 
   window.form = {
-    adForm: adForm,
-    formElements: formElements,
-    onPriceClick: onPriceClick
+    ad: ad,
+    elements: elements,
+    onPriceChange: onPriceChange
   };
 })();

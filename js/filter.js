@@ -55,7 +55,7 @@
     });
   };
 
-  var setFilters = function (pins) {
+  var setSort = function (pins) {
     var serverPins = [];
     var i = 0;
     while (serverPins.length < MAX_PINS && i < pins.length) {
@@ -73,6 +73,6 @@
   };
 
   window.filter = {
-    setFilters: setFilters
+    setSort: setSort
   };
 })();
