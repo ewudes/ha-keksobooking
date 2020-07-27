@@ -60,19 +60,15 @@
   };
 
   var showSuccessMessage = function () {
-    document.addEventListener('click', function () {
-      onCloseSuccessMessage(successElement);
-    });
+    document.addEventListener('click', onCloseSuccessMessage);
     document.addEventListener('keydown', onCloseSuccessEsc);
     window.pin.mainSection.insertAdjacentElement('afterbegin', successElement);
     window.map.setUnactiveMode();
   };
 
   var onCloseSuccessMessage = function () {
-    successElement.remove(successElement);
-    document.removeEventListener('click', function () {
-      onCloseSuccessMessage(successElement);
-    });
+    successElement.remove();
+    document.removeEventListener('click', onCloseSuccessMessage);
   };
 
   var onCloseSuccessEsc = function (evt) {

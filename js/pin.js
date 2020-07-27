@@ -32,7 +32,7 @@
   var errorElement = errorTemplate.cloneNode(true);
   var mainSection = document.querySelector('main');
 
-  var pins = window.load.loadData;
+  var pins = [];
 
   var onLeftMouseDownProcess = function (evt) {
     if (evt.button === MOUSE_BUTTON) {
@@ -47,16 +47,14 @@
     }
   };
 
-  var onEscProcess = function (evt) {
-    if (evt.key === ESC) {
-      window.map.deleteUnactiveMode();
-    }
-  };
-
   var stopMainPinEventListener = function () {
     mapPinMain.removeEventListener('keydown', onEnterProcess);
     mapPinMain.removeEventListener('mousedown', onLeftMouseDownProcess);
-    mapPinMain.removeEventListener('keydown', onEscProcess);
+  };
+
+  var startMainPinEventListener = function () {
+    mapPinMain.addEventListener('keydown', onEnterProcess);
+    mapPinMain.addEventListener('mousedown', onLeftMouseDownProcess);
   };
 
   mapPinMain.addEventListener('mousedown', function (evt) {
@@ -131,13 +129,12 @@
     data.forEach(function (dataPins) {
       fragment.appendChild(renderPin(dataPins));
     });
-    return window.pin.mapPins.appendChild(fragment);
+    return mapPins.appendChild(fragment);
   };
 
   var renderPins = window.debounce(function () {
-    remove();
-    var serverPins = window.filter.setSort(pins);
-    getFromServer(serverPins);
+    removeAll();
+    getFromServer(window.filter.setSort(pins));
   });
 
   var request = function () {
@@ -150,17 +147,21 @@
       element.remove();
     });
   };
-  var remove = function () {
+
+  var removeAll = function () {
     var pinButtons = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
     deleteServerPins(pinButtons);
+  };
+
+  var onFiltersChange = function () {
+    renderPins();
   };
 
   var onSuccess = function (data) {
     pins = data;
     renderPins();
     window.map.enabledElements(mapFilters);
-    mapPinMain.addEventListener('keydown', onEnterProcess);
-    mapPinMain.addEventListener('mousedown', onLeftMouseDownProcess);
+    startFiltersEventListener();
   };
 
   var onError = function (errorMessage) {
@@ -191,23 +192,27 @@
     }
   };
 
-  mapPinMain.addEventListener('mousedown', onLeftMouseDownProcess);
-  mapPinMain.addEventListener('keydown', onEnterProcess);
+  var stopFiltersEventListener = function () {
+    mapFilters.removeEventListener('change', onFiltersChange);
+    mapFilters.removeEventListener('change', window.card.onCloseDeclaration);
+  };
 
-  // mapFilters.addEventListener('change', onRenderChange);
-  mapFilters.addEventListener('change', window.card.onCloseDeclaration);
+  var startFiltersEventListener = function () {
+    mapFilters.addEventListener('change', onFiltersChange);
+    mapFilters.addEventListener('change', window.card.onCloseDeclaration);
+  };
 
   window.pin = {
-    mapPins: mapPins,
     mainSection: mainSection,
     mapFilters: mapFilters,
     getMainPinAddress: getMainPinAddress,
+    startMainPinEventListener: startMainPinEventListener,
     stopMainPinEventListener: stopMainPinEventListener,
-    // onRenderChange: onRenderChange,
-    renderPins: renderPins,
+    stopFiltersEventListener: stopFiltersEventListener,
+    startFiltersEventListener: startFiltersEventListener,
     getFromServer: getFromServer,
     onError: onError,
     request: request,
-    remove: remove
+    remove: removeAll
   };
 })();

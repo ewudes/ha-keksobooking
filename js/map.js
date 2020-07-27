@@ -16,21 +16,10 @@
     });
   };
 
-  var enabl = function (el) {
-    var elements = Array.from(el);
-    elements.forEach(function (element) {
-      // element.removeAttribute('disabled');
-      element.setAttribute('enabled');
-
-    });
-  };
-
   var enabledElements = function (inputs) {
-    var elements = Array.from(inputs);
-    elements.forEach(function (element) {
+    Array.from(inputs).forEach(function (element) {
       element.removeAttribute('disabled');
     });
-    addressInput.setAttribute('readonly', true);
   };
 
   var deleteUnactiveMode = function () {
@@ -43,13 +32,10 @@
     window.pin.stopMainPinEventListener();
     setCursorPointer(filter);
     setCursorPointer(feature);
-    isActivated = true;
     window.pin.getMainPinAddress();
     enabledElements(window.form.elements);
     blockInput(window.pin.mapFilters);
-    // if (window.load.loadData) {
-    //   enabledElements(window.pin.mapFilters);
-    // }
+    isActivated = true;
   };
 
   var setUnactiveMode = function () {
@@ -59,17 +45,17 @@
     blockInput(window.form.elements);
     setCursorDefault(filter);
     setCursorDefault(feature);
-    isActivated = false;
     window.form.ad.reset();
     window.card.onCloseDeclaration();
     window.pin.mapFilters.reset();
     window.form.onPriceChange();
-    window.pin.renderPins.reset();
     window.pin.remove();
     window.pin.getMainPinAddress();
-    window.pin.request();
+    window.pin.startMainPinEventListener();
+    window.pin.stopFiltersEventListener();
     window.preview.remove();
     mainPin.style = DEFAULT_POSITION;
+    isActivated = false;
   };
 
   var setCursorDefault = function (inputs) {
@@ -97,6 +83,5 @@
     isActivated: isActivated,
     setUnactiveMode: setUnactiveMode,
     enabledElements: enabledElements,
-    enabl: enabl
   };
 })();
