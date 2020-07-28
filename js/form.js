@@ -68,15 +68,19 @@
 
   var onCloseSuccessMessage = function () {
     successElement.remove();
-    document.removeEventListener('click', onCloseSuccessMessage);
+    stopCloseSuccessEventListener();
   };
 
   var onCloseSuccessEsc = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
       onCloseSuccessMessage(successElement);
-      document.removeEventListener('keydown', onCloseSuccessEsc);
     }
+  };
+
+  var stopCloseSuccessEventListener = function () {
+    document.removeEventListener('change', onCloseSuccessMessage(successElement));
+    document.removeEventListener('keydown', onCloseSuccessEsc);
   };
 
   var resetValidation = function () {
@@ -121,6 +125,7 @@
   window.form = {
     ad: ad,
     elements: elements,
-    onPriceChange: onPriceChange
+    onPriceChange: onPriceChange,
+    onCloseSuccessMessage: onCloseSuccessMessage
   };
 })();

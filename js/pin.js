@@ -10,7 +10,7 @@
   var MIN_COORDINATE_Y = 130;
   var MAX_COORDINATE_Y = 630;
   var MIN_COORDINATE_X = 0;
-  var POINTER = 87;
+  var POINTER = 84;
 
   var mapOverlay = document.querySelector('.map__overlay');
   var mapPins = window.map.container.querySelector('.map__pins');
@@ -21,8 +21,6 @@
   var pinImage = mapPinMain.querySelector('img');
   var mapFilters = document.querySelector('.map__filters');
   var halfPinWidth = mapPinMain.offsetWidth / 2;
-  var pinHeightWithoutTail = mapPinMain.offsetHeight;
-  var pinHeight = pinHeightWithoutTail + HEIGHT_TAIL_MAIN_PIN;
   var pinTemplate = document.body.querySelector('#pin')
     .content
     .querySelector('button');
@@ -69,10 +67,10 @@
       var coordinateY = moveEvt.clientY - mapCoordinate.top;
 
       coordinateX = Math.max(MIN_COORDINATE_X, Math.min(maxWidth, coordinateX)) - halfPinWidth;
-      coordinateY = Math.max(MIN_COORDINATE_Y, Math.min(MAX_COORDINATE_Y, coordinateY)) - pinHeight;
+      coordinateY = Math.max(MIN_COORDINATE_Y, Math.min(MAX_COORDINATE_Y, coordinateY)) - POINTER;
 
       mapPinMain.style.left = coordinateX + 'px';
-      mapPinMain.style.top = (coordinateY + POINTER) + 'px';
+      mapPinMain.style.top = coordinateY + 'px';
 
       getMainPinAddress();
     };
@@ -90,7 +88,7 @@
 
   var getMainPinAddress = function () {
     var leftCoord = mapPinMain.offsetLeft;
-    var topCoord = mapPinMain.offsetTop;
+    var topCoord = mapPinMain.offsetTop + POINTER;
     var adress = window.map.addressInput.value = leftCoord + ', ' + topCoord;
 
     if (window.map.isActivated) {
