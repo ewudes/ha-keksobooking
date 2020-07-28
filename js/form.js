@@ -74,12 +74,12 @@
   var onCloseSuccessEsc = function (evt) {
     if (evt.key === ESC) {
       evt.preventDefault();
-      onCloseSuccessMessage(successElement);
+      onCloseSuccessMessage();
     }
   };
 
   var stopCloseSuccessEventListener = function () {
-    document.removeEventListener('change', onCloseSuccessMessage(successElement));
+    document.removeEventListener('click', onCloseSuccessMessage);
     document.removeEventListener('keydown', onCloseSuccessEsc);
   };
 
